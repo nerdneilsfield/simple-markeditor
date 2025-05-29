@@ -1,0 +1,175 @@
+/* GitHub Theme */
+:root {
+  /* Text colors */
+  --text-color: #24292f;
+  --text-muted: #656d76;
+  --text-subtle: #8c959f;
+  
+  /* Background colors */
+  --bg-color: #ffffff;
+  --bg-secondary: #f6f8fa;
+  --bg-tertiary: #eaeef2;
+  
+  /* Border colors */
+  --border-color: #d0d7de;
+  --border-muted: #d8dee4;
+  
+  /* Code colors */
+  --code-bg: #f6f8fa;
+  --code-color: #24292f;
+  
+  /* Syntax highlighting */
+  --syntax-comment: #6a737d;
+  --syntax-string: #032f62;
+  --syntax-keyword: #d73a49;
+  --syntax-function: #6f42c1;
+  --syntax-number: #005cc5;
+  --syntax-operator: #d73a49;
+  --syntax-variable: #e36209;
+  
+  /* Link colors */
+  --link-color: #0969da;
+  --link-hover: #0550ae;
+  
+  /* Quote colors */
+  --quote-border: #d0d7de;
+  --quote-bg: #f6f8fa;
+  
+  /* Table colors */
+  --table-border: #d0d7de;
+  --table-bg-even: #f6f8fa;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--text-color);
+  background-color: var(--bg-color);
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 24px;
+  margin-bottom: 16px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--text-color);
+}
+
+h1 { font-size: 2em; border-bottom: 1px solid var(--border-muted); padding-bottom: 0.3em; }
+h2 { font-size: 1.5em; border-bottom: 1px solid var(--border-muted); padding-bottom: 0.3em; }
+h3 { font-size: 1.25em; }
+h4 { font-size: 1em; }
+h5 { font-size: 0.875em; }
+h6 { font-size: 0.85em; color: var(--text-muted); }
+
+/* Paragraphs */
+p {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+/* Links */
+a {
+  color: var(--link-color);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--link-hover);
+  text-decoration: underline;
+}
+
+/* Code */
+code {
+  background-color: var(--code-bg);
+  color: var(--code-color);
+  padding: 0.2em 0.4em;
+  margin: 0;
+  font-size: 85%;
+  border-radius: 6px;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Monaco, Consolas, monospace;
+}
+
+pre {
+  background-color: var(--code-bg);
+  padding: 16px;
+  overflow: auto;
+  font-size: 85%;
+  line-height: 1.45;
+  border-radius: 6px;
+  margin-bottom: 16px;
+}
+
+pre code {
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  border-radius: 0;
+  font-size: 100%;
+}
+
+/* Blockquotes */
+blockquote {
+  margin: 0 0 16px 0;
+  padding: 0 1em;
+  color: var(--text-muted);
+  border-left: 0.25em solid var(--quote-border);
+  background-color: var(--quote-bg);
+}
+
+/* Lists */
+ul, ol {
+  margin-top: 0;
+  margin-bottom: 16px;
+  padding-left: 2em;
+}
+
+li + li {
+  margin-top: 0.25em;
+}
+
+/* Tables */
+table {
+  border-spacing: 0;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+table th,
+table td {
+  padding: 6px 13px;
+  border: 1px solid var(--table-border);
+}
+
+table th {
+  font-weight: 600;
+  background-color: var(--bg-secondary);
+}
+
+table tr:nth-child(even) {
+  background-color: var(--table-bg-even);
+}
+
+/* Horizontal rule */
+hr {
+  height: 0.25em;
+  padding: 0;
+  margin: 24px 0;
+  background-color: var(--border-color);
+  border: 0;
+}
+
+/* Task lists */
+input[type="checkbox"] {
+  margin-right: 0.5em;
+}
+
+/* Images */
+img {
+  max-width: 100%;
+  height: auto;
+  box-sizing: content-box;
+}

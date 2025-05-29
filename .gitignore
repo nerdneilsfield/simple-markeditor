@@ -134,3 +134,29 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Testing
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Editor files
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS generated files
+.DS_Store
+.DS_Store?
+Thumbs.db
+ehthumbs.db
+Icon?
+
+# Lock files (using pnpm)
+package-lock.json
+yarn.lock

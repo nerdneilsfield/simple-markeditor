@@ -1,0 +1,19 @@
+# Cloudflare Pages configuration for Simple Markdown Editor
+
+name = "simple-markeditor"
+compatibility_date = "2023-12-01"
+
+[build]
+command = "pnpm build"
+publish = "dist"
+
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
+
+[env.production]
+vars = { NODE_ENV = "production" }
+
+[env.preview]
+vars = { NODE_ENV = "preview" }

@@ -1,0 +1,54 @@
+{
+  "zh-CN": {
+    "title": "Markdown 编辑器",
+    "editor": "编辑器",
+    "preview": "预览",
+    "theme": "主题",
+    "export": "导出 PDF",
+    "lint": "检查修复",
+    "settings": "设置",
+    "autoSave": "自动保存",
+    "themes": {
+      "github": "GitHub",
+      "notion": "Notion",
+      "typora": "Typora",
+      "academic": "学术"
+    },
+    "lint_rules": {
+      "escape_asterisk": "转义星号",
+      "heading_space": "标题空格",
+      "fence_close": "代码块闭合"
+    },
+    "diff": {
+      "title": "Markdown 修复预览",
+      "apply": "应用修复",
+      "cancel": "取消"
+    }
+  },
+  "en": {
+    "title": "Markdown Editor",
+    "editor": "Editor",
+    "preview": "Preview",
+    "theme": "Theme",
+    "export": "Export PDF",
+    "lint": "Lint & Fix",
+    "settings": "Settings",
+    "autoSave": "Auto Save",
+    "themes": {
+      "github": "GitHub",
+      "notion": "Notion",
+      "typora": "Typora",
+      "academic": "Academic"
+    },
+    "lint_rules": {
+      "escape_asterisk": "Escape Asterisk",
+      "heading_space": "Heading Space",
+      "fence_close": "Fence Close"
+    },
+    "diff": {
+      "title": "Markdown Fix Preview",
+      "apply": "Apply Fixes",
+      "cancel": "Cancel"
+    }
+  }
+}

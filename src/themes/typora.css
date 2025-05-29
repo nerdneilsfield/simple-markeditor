@@ -1,0 +1,254 @@
+/* Typora Theme */
+:root {
+  /* Text colors */
+  --text-color: #333333;
+  --text-muted: #999999;
+  --text-subtle: #cccccc;
+  
+  /* Background colors */
+  --bg-color: #fefefe;
+  --bg-secondary: #f8f8f8;
+  --bg-tertiary: #f0f0f0;
+  
+  /* Border colors */
+  --border-color: #e7e7e7;
+  --border-muted: #dddddd;
+  
+  /* Code colors */
+  --code-bg: #f8f8f8;
+  --code-color: #e96900;
+  
+  /* Syntax highlighting */
+  --syntax-comment: #999999;
+  --syntax-string: #690;
+  --syntax-keyword: #07a;
+  --syntax-function: #dd4a68;
+  --syntax-number: #905;
+  --syntax-operator: #a67f59;
+  --syntax-variable: #e90;
+  
+  /* Link colors */
+  --link-color: #4183c4;
+  --link-hover: #369;
+  
+  /* Quote colors */
+  --quote-border: #dfe2e5;
+  --quote-bg: transparent;
+  
+  /* Table colors */
+  --table-border: #dfe2e5;
+  --table-bg-even: #f6f8fa;
+  
+  /* Accent colors */
+  --accent-color: #4183c4;
+  --accent-light: #e6f3ff;
+}
+
+body {
+  font-family: "Open Sans", "Clear Sans", "Helvetica Neue", Helvetica, Arial, 'Segoe UI Emoji', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 30px 30px 100px;
+  word-wrap: break-word;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 1.2em;
+  margin-bottom: 0.6em;
+  font-weight: bold;
+  line-height: 1.4;
+  color: var(--text-color);
+  cursor: text;
+  position: relative;
+}
+
+h1 { 
+  font-size: 2.25em;
+  line-height: 1.2;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.3em;
+}
+h2 { 
+  font-size: 1.75em;
+  line-height: 1.225;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.3em;
+}
+h3 { font-size: 1.5em; line-height: 1.43; }
+h4 { font-size: 1.25em; }
+h5 { font-size: 1em; }
+h6 { font-size: 1em; color: var(--text-muted); }
+
+/* Paragraphs */
+p {
+  margin: 0.8em 0;
+  line-height: 1.6;
+}
+
+/* Links */
+a {
+  color: var(--link-color);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--link-hover);
+  text-decoration: underline;
+}
+
+/* Code */
+code {
+  background-color: var(--code-bg);
+  color: var(--code-color);
+  padding: 0.2em 0.4em;
+  margin: 0;
+  font-size: 0.9em;
+  border-radius: 3px;
+  font-family: 'Roboto Mono', Monaco, courier, monospace;
+  font-weight: normal;
+}
+
+pre {
+  background-color: var(--code-bg);
+  padding: 1em;
+  overflow: auto;
+  font-size: 0.9em;
+  line-height: 1.45;
+  border-radius: 3px;
+  margin: 1.2em 0;
+  border: 1px solid var(--border-color);
+}
+
+pre code {
+  background: transparent;
+  color: var(--text-color);
+  padding: 0;
+  margin: 0;
+  border-radius: 0;
+  font-size: 100%;
+  white-space: pre-wrap;
+}
+
+/* Blockquotes */
+blockquote {
+  margin: 1.2em 0;
+  padding: 0.25em 0 0.25em 1em;
+  color: var(--text-muted);
+  border-left: 4px solid var(--quote-border);
+  background-color: var(--quote-bg);
+}
+
+blockquote > :first-child {
+  margin-top: 0;
+}
+
+blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+/* Lists */
+ul, ol {
+  margin: 0.8em 0;
+  padding-left: 2em;
+}
+
+li {
+  margin: 0.2em 0;
+}
+
+li > p {
+  margin: 0.6em 0;
+}
+
+/* Tables */
+table {
+  border-spacing: 0;
+  border-collapse: collapse;
+  margin: 1.2em 0;
+  width: 100%;
+  overflow: auto;
+  break-inside: auto;
+  text-align: left;
+}
+
+table th,
+table td {
+  padding: 0.5em 1em;
+  border: 1px solid var(--table-border);
+}
+
+table th {
+  font-weight: bold;
+  background-color: var(--bg-secondary);
+}
+
+table tr:nth-child(even) {
+  background-color: var(--table-bg-even);
+}
+
+/* Horizontal rule */
+hr {
+  height: 2px;
+  padding: 0;
+  margin: 1.7em 0;
+  background-color: var(--border-color);
+  border: 0;
+  border-radius: 1px;
+}
+
+/* Task lists */
+input[type="checkbox"] {
+  margin-right: 0.5em;
+  cursor: pointer;
+}
+
+/* Images */
+img {
+  max-width: 100%;
+  height: auto;
+  box-sizing: content-box;
+}
+
+/* Strong and emphasis */
+strong {
+  font-weight: bold;
+}
+
+em {
+  font-style: italic;
+}
+
+/* Selection */
+::selection {
+  background-color: var(--accent-light);
+}
+
+/* Focus outline */
+:focus {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+  body {
+    font-size: 12pt;
+    max-width: none;
+    padding: 0;
+    margin: 0;
+    background: white;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+  }
+  
+  pre, blockquote {
+    page-break-inside: avoid;
+  }
+}
