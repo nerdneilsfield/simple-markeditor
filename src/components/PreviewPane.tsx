@@ -28,9 +28,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({ markdown, theme }) => 
   const markedOptions = useMemo(() => {
     marked.setOptions({
       gfm: true,
-      breaks: true,
-      headerIds: true,
-      mangle: false
+      breaks: true
     })
 
     // Custom renderer for code blocks with Prism highlighting

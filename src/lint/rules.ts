@@ -1,8 +1,4 @@
-import { unified } from 'unified'
-import remarkParse from 'remark-parse'
-import remarkStringify from 'remark-stringify'
-import remarkLint from 'remark-lint'
-import type { VFile } from 'vfile'
+// Lint rule definitions for Markdown validation
 
 export interface LintRuleResult {
   line: number

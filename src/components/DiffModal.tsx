@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react'
-import { useAppStore } from '../store'
 
 interface DiffModalProps {
   isOpen: boolean

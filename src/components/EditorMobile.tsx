@@ -1,5 +1,5 @@
 import { useRef, useEffect } from 'react'
-import { EditorView, basicSetup } from '@codemirror/view'
+import { EditorView } from '@codemirror/view'
 import { EditorState } from '@codemirror/state'
 import { markdown } from '@codemirror/lang-markdown'
 import { oneDark } from '@codemirror/theme-one-dark'
@@ -22,7 +22,6 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
     if (!editorRef.current) return
 
     const extensions = [
-      basicSetup,
       markdown(),
       EditorView.updateListener.of((update) => {
         if (update.docChanged) {

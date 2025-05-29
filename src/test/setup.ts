@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom'
+import { vi } from 'vitest'
 
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
@@ -16,14 +17,14 @@ Object.defineProperty(window, 'matchMedia', {
 })
 
 // Mock ResizeObserver
-global.ResizeObserver = class ResizeObserver {
+;(globalThis as any).ResizeObserver = class ResizeObserver {
   observe() {}
   unobserve() {}
   disconnect() {}
 }
 
 // Mock IntersectionObserver
-global.IntersectionObserver = class IntersectionObserver {
+;(globalThis as any).IntersectionObserver = class IntersectionObserver {
   constructor() {}
   observe() {}
   unobserve() {}
@@ -37,21 +38,23 @@ Object.defineProperty(window, 'print', {
 })
 
 // Mock localStorage
-const localStorageMock = {
-  getItem: (key: string) => {
-    return localStorageMock[key] || null
+const storage: { [key: string]: string } = {}
+
+const localStorageMock: Storage = {
+  length: Object.keys(storage).length,
+  key: (_index: number) => null,
+  getItem: (key: string): string | null => {
+    return storage[key] || null
   },
-  setItem: (key: string, value: string) => {
-    localStorageMock[key] = value
+  setItem: (key: string, value: string): void => {
+    storage[key] = value
   },
-  removeItem: (key: string) => {
-    delete localStorageMock[key]
+  removeItem: (key: string): void => {
+    delete storage[key]
   },
-  clear: () => {
-    for (const key in localStorageMock) {
-      if (key !== 'getItem' && key !== 'setItem' && key !== 'removeItem' && key !== 'clear') {
-        delete localStorageMock[key]
-      }
+  clear: (): void => {
+    for (const key in storage) {
+      delete storage[key]
     }
   }
 }
@@ -61,8 +64,10 @@ Object.defineProperty(window, 'localStorage', {
   writable: true
 })
 
-// Mock DOMPurify
-jest.mock('dompurify', () => ({
-  sanitize: (html: string) => html,
-  isSupported: true
+// Mock DOMPurify (handled by Vitest)
+vi.mock('dompurify', () => ({
+  default: {
+    sanitize: (html: string) => html,
+    isSupported: true
+  }
 }))

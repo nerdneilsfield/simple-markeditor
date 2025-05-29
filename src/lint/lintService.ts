@@ -1,7 +1,3 @@
-import { unified } from 'unified'
-import remarkParse from 'remark-parse'
-import remarkStringify from 'remark-stringify'
-import remarkLint from 'remark-lint'
 import type { LintRuleResult, LintRule } from './rules'
 import { defaultRules, getEnabledRules } from './rules'
 
@@ -38,29 +34,8 @@ export class LintService {
       }
     }
 
-    // Also run remark-lint for additional checks
-    try {
-      const file = await unified()
-        .use(remarkParse)
-        .use(remarkLint)
-        .process(content)
-
-      // Convert remark lint messages to our format
-      file.messages.forEach(message => {
-        if (message.line && message.column) {
-          allResults.push({
-            line: message.line,
-            column: message.column,
-            message: message.message,
-            ruleId: message.ruleId || 'remark-lint',
-            severity: message.fatal ? 'error' : 'warning',
-            fixable: false
-          })
-        }
-      })
-    } catch (error) {
-      console.warn('Error running remark-lint:', error)
-    }
+    // Additional basic checks could be added here
+    // For now, we rely on our custom rules
 
     // Sort results by line and column
     allResults.sort((a, b) => a.line - b.line || a.column - b.column)
@@ -147,7 +122,6 @@ export class LintService {
     }
 
     const lines: string[] = []
-    const ruleCounts = this.getRuleCounts(results)
     
     lines.push(`Found ${results.length} lint issue(s):`)
     lines.push('')

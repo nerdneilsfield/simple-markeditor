@@ -46,21 +46,19 @@ export const SettingsDrawer: React.FC<SettingsDrawerProps> = ({ isOpen, onClose 
 
   // Handle lint setting toggle
   const handleLintToggle = (ruleId: string, enabled: boolean) => {
-    const key = ruleId.replace('-', '') as keyof typeof lintSettings
-    if (key === 'escapeasrterisk') {
+    if (ruleId === 'escape-asterisk') {
       setLintSettings({ escapeAsterisk: enabled })
-    } else if (key === 'headingspace') {
+    } else if (ruleId === 'heading-space') {
       setLintSettings({ headingSpace: enabled })
-    } else if (key === 'fenceclose') {
+    } else if (ruleId === 'fence-close') {
       setLintSettings({ fenceClose: enabled })
     }
   }
 
   const getLintSettingValue = (ruleId: string): boolean => {
-    const key = ruleId.replace('-', '')
-    if (key === 'escapeasrterisk') return lintSettings.escapeAsterisk
-    if (key === 'headingspace') return lintSettings.headingSpace
-    if (key === 'fenceclose') return lintSettings.fenceClose
+    if (ruleId === 'escape-asterisk') return lintSettings.escapeAsterisk
+    if (ruleId === 'heading-space') return lintSettings.headingSpace
+    if (ruleId === 'fence-close') return lintSettings.fenceClose
     return false
   }
 
