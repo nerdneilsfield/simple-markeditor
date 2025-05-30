@@ -369,6 +369,39 @@ export const listMarkerRule: LintRule = {
   },
 }
 
+export const boldSpacingRule: LintRule = {
+  id: 'bold-spacing',
+  name: 'Bold Spacing',
+  description: 'Add spaces around bold text',
+  enabled: true,
+  check: (content: string): LintRuleResult[] => {
+    const results: LintRuleResult[] = []
+    const lines = content.split('\n')
+
+    lines.forEach((line, lineIndex) => {
+      // Check for bold text without spaces
+      const boldRegex = /[^\s](\*\*[^*]+\*\*)|(\*\*[^*]+\*\*)[^\s]/g
+      let match
+      while ((match = boldRegex.exec(line)) !== null) {
+        results.push({
+          line: lineIndex + 1,
+          column: match.index + 1,
+          message: 'Bold text should have spaces before and after',
+          ruleId: 'bold-spacing',
+          severity: 'warning',
+          fixable: true,
+        })
+      }
+    })
+
+    return results
+  },
+  fix: (content: string): string => {
+    return content.replace(/(\S)(\*\*[^*]+\*\*)/g, '$1 $2')
+                 .replace(/(\*\*[^*]+\*\*)(\S)/g, '$1 $2')
+  },
+}
+
 export const defaultRules: LintRule[] = [
   unescapeMarkdownRule,
   headingSpaceRule,
@@ -376,6 +409,7 @@ export const defaultRules: LintRule[] = [
   mathFormulaRule,
   emphasisStyleRule,
   listMarkerRule,
+  boldSpacingRule,
 ]
 
 export const getLintRuleById = (id: string): LintRule | undefined => {

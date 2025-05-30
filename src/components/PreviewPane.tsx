@@ -4,7 +4,6 @@ import DOMPurify from 'dompurify'
 import Prism from 'prismjs'
 import markedKatex from 'marked-katex-extension'
 import markedFootnote from 'marked-footnote'
-import { markedHighlight } from 'marked-highlight'
 import mermaid from 'mermaid'
 
 // Import common Prism languages
@@ -65,10 +64,10 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
       breaks: true,
     })
 
-    // Custom renderer for code blocks with Prism highlighting and Mermaid support
+    // Custom renderer for code blocks with PrismJS highlighting and Mermaid support
     const renderer = new marked.Renderer()
 
-    renderer.code = (code, language) => {
+    renderer.code = (code, language, _escaped) => {
       // Handle Mermaid diagrams
       if (language === 'mermaid') {
         const id = `mermaid-${Math.random().toString(36).substring(2, 15)}`
@@ -94,6 +93,8 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
           return `<pre class="language-${language}"><code class="language-${language}">${code}</code></pre>`
         }
       }
+      
+      // Plain code block for unknown languages
       return `<pre><code>${code}</code></pre>`
     }
 
@@ -145,24 +146,6 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
       ],
     }
 
-    // Enhanced highlighting with marked-highlight
-    marked.use(
-      markedHighlight({
-        langPrefix: 'hljs language-',
-        highlight(code, lang) {
-          if (lang && Prism.languages[lang]) {
-            try {
-              return Prism.highlight(code, Prism.languages[lang], lang)
-            } catch (error) {
-              console.warn(`Highlighting failed for language '${lang}':`, error)
-              return code
-            }
-          }
-          return code
-        },
-      })
-    )
-
     // Manual heading ID generation using renderer extension
     const customRenderer = {
       heading(text: string, level: number) {
@@ -177,7 +160,6 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
     }
 
     marked.use({ renderer: customRenderer })
-
     marked.use({ renderer })
     marked.use(markedKatex(katexOptions))
     marked.use(markedFootnote())

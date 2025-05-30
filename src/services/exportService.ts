@@ -31,42 +31,8 @@ class ExportService {
     return iframe.contentDocument || iframe.contentWindow?.document || null
   }
 
-  private async captureHighQualityContent(
-    element: HTMLElement
-  ): Promise<HTMLCanvasElement> {
-    // High-quality HTML to canvas conversion
-    return html2canvas(element, {
-      allowTaint: true,
-      useCORS: true,
-      scale: 2, // Higher resolution
-      logging: false,
-      backgroundColor: '#ffffff',
-      removeContainer: true,
-      imageTimeout: 0,
-      onclone: clonedDoc => {
-        // Ensure all styles are applied correctly
-        const clonedElement = clonedDoc.body
-        clonedElement.style.padding = '20px'
-        clonedElement.style.fontFamily = 'system-ui, -apple-system, sans-serif'
-        clonedElement.style.lineHeight = '1.6'
-        clonedElement.style.color = '#000000'
-
-        // Fix any display issues
-        const elements = clonedElement.querySelectorAll('*')
-        elements.forEach(el => {
-          const htmlEl = el as HTMLElement
-          if (
-            htmlEl.style.color === 'white' ||
-            htmlEl.style.color === '#ffffff'
-          ) {
-            htmlEl.style.color = '#000000'
-          }
-        })
-      },
-    })
-  }
-
   private getPageSizeDimensions(pageSize: string, orientation: string) {
+    // Return dimensions in mm
     const sizes = {
       A4: orientation === 'portrait' ? [210, 297] : [297, 210],
       A3: orientation === 'portrait' ? [297, 420] : [420, 297],
@@ -76,12 +42,164 @@ class ExportService {
     return sizes[pageSize as keyof typeof sizes] || sizes.A4
   }
 
+  private mmToPx(mm: number, dpi: number = 96): number {
+    // Convert mm to pixels: 1 inch = 25.4 mm, 1 inch = dpi pixels
+    return (mm * dpi) / 25.4
+  }
+
+  private resizeContentForPDF(
+    contentElement: HTMLElement,
+    pageWidthMm: number,
+    _pageHeightMm: number,
+    margins: { top: number; right: number; bottom: number; left: number }
+  ) {
+    const originalStyles = {
+      width: contentElement.style.width,
+      padding: contentElement.style.padding,
+      fontSize: contentElement.style.fontSize,
+      lineHeight: contentElement.style.lineHeight,
+      transform: contentElement.style.transform,
+    }
+
+    // Convert mm to pixels for calculations (use 96 DPI as standard)
+    const dpi = 96
+    const pageWidthPx = this.mmToPx(pageWidthMm, dpi)
+    const marginsLeftRightPx = this.mmToPx(margins.left + margins.right, dpi)
+    const availableWidthPx = pageWidthPx - marginsLeftRightPx
+
+    // Get current content width
+    const currentContentWidth = contentElement.scrollWidth || contentElement.clientWidth
+
+    // Calculate scale factor to fit content in available width
+    const scaleFactor = Math.min(availableWidthPx / currentContentWidth, 1.0)
+
+    // Apply scaling and size adjustments
+    contentElement.style.transform = `scale(${scaleFactor})`
+    contentElement.style.transformOrigin = 'top left'
+    contentElement.style.width = `${availableWidthPx}px`
+    contentElement.style.maxWidth = `${availableWidthPx}px`
+
+    // Adjust typography for better PDF rendering
+    contentElement.style.fontSize = '14px'
+    contentElement.style.lineHeight = '1.6'
+    contentElement.style.overflow = 'visible'
+
+    return originalStyles
+  }
+
+  private restoreContentStyles(
+    contentElement: HTMLElement,
+    originalStyles: { 
+      width: string; 
+      padding: string; 
+      fontSize: string; 
+      lineHeight: string;
+      transform: string;
+    }
+  ) {
+    contentElement.style.width = originalStyles.width
+    contentElement.style.padding = originalStyles.padding
+    contentElement.style.fontSize = originalStyles.fontSize
+    contentElement.style.lineHeight = originalStyles.lineHeight
+    contentElement.style.transform = originalStyles.transform
+    contentElement.style.maxWidth = ''
+    contentElement.style.overflow = ''
+  }
+
+  private async captureContentInSections(
+    contentElement: HTMLElement,
+    pageContentHeight: number,
+    pageWidthPx: number,
+    margins: { top: number; right: number; bottom: number; left: number }
+  ): Promise<HTMLCanvasElement[]> {
+    const sections: HTMLCanvasElement[] = []
+    let currentY = 0
+    const totalHeight = contentElement.scrollHeight
+
+    // Ensure content is ready and visible
+    if (!contentElement || totalHeight === 0) {
+      throw new Error('Unable to find element in cloned iframe')
+    }
+
+    // Convert margin values to pixels for calculations
+    const dpi = 96
+    const marginsLeftRightPx = this.mmToPx(margins.left + margins.right, dpi)
+    const availableWidthPx = pageWidthPx - marginsLeftRightPx
+
+    while (currentY < totalHeight) {
+      // Create a clipping mask for the current section
+      const clipHeight = Math.min(pageContentHeight, totalHeight - currentY)
+      
+      try {
+        // Capture the current section using viewport clipping
+        const canvas = await html2canvas(contentElement, {
+          allowTaint: true,
+          useCORS: true,
+          scale: 1.5, // Reduced scale for better performance
+          logging: false,
+          backgroundColor: '#ffffff',
+          y: currentY,
+          height: clipHeight,
+          width: availableWidthPx,
+          windowHeight: clipHeight,
+          removeContainer: false,
+          onclone: (clonedDoc) => {
+            try {
+              const clonedBody = clonedDoc.body
+              if (clonedBody) {
+                clonedBody.style.padding = '0'
+                clonedBody.style.margin = '0'
+                clonedBody.style.width = `${availableWidthPx}px`
+                clonedBody.style.overflow = 'visible'
+                
+                // Ensure all content is visible
+                const allElements = clonedBody.querySelectorAll('*')
+                allElements.forEach(el => {
+                  const htmlEl = el as HTMLElement
+                  if (htmlEl.style.display === 'none') {
+                    htmlEl.style.display = 'block'
+                  }
+                })
+              }
+            } catch (err) {
+              console.warn('Error in onclone callback:', err)
+            }
+          }
+        })
+        
+        sections.push(canvas)
+      } catch (error) {
+        console.error(`Error capturing section at y=${currentY}:`, error)
+        // Create a fallback canvas with error message
+        const fallbackCanvas = document.createElement('canvas')
+        fallbackCanvas.width = availableWidthPx
+        fallbackCanvas.height = clipHeight
+        const ctx = fallbackCanvas.getContext('2d')
+        if (ctx) {
+          ctx.fillStyle = '#ffffff'
+          ctx.fillRect(0, 0, fallbackCanvas.width, fallbackCanvas.height)
+          ctx.fillStyle = '#000000'
+          ctx.font = '16px Arial'
+          ctx.fillText('Error rendering this section', 20, 40)
+        }
+        sections.push(fallbackCanvas)
+      }
+      
+      currentY += clipHeight
+    }
+
+    return sections
+  }
+
   async exportToPDF(options: ExportOptions = {}): Promise<ExportResult> {
     try {
       const iframeDoc = this.getIframeContent()
       if (!iframeDoc) {
         throw new Error('Preview content not available')
       }
+
+      // Wait for iframe content to be fully loaded
+      await new Promise(resolve => setTimeout(resolve, 1000))
 
       const {
         quality = 'high',
@@ -92,10 +210,15 @@ class ExportService {
       } = options
 
       // Get page dimensions
-      const [pageWidth, pageHeight] = this.getPageSizeDimensions(
+      const [pageWidthMm, pageHeightMm] = this.getPageSizeDimensions(
         pageSize,
         orientation
       )
+
+      // Convert mm to pixels for calculations (use 96 DPI as standard)
+      const dpi = 96
+      const pageWidthPx = this.mmToPx(pageWidthMm, dpi)
+      const pageHeightPx = this.mmToPx(pageHeightMm, dpi)
 
       // Create PDF document
       const pdf = new jsPDF({
@@ -104,84 +227,63 @@ class ExportService {
         format: pageSize.toLowerCase() as 'a4' | 'letter' | 'legal',
       })
 
-      // Get content element
+      // Get content element with better validation
       const contentElement = iframeDoc.body
       if (!contentElement) {
         throw new Error('No content to export')
       }
 
-      // Set up content for capture
-      const originalWidth = contentElement.style.width
-      const originalPadding = contentElement.style.padding
+      // Ensure content is rendered and visible
+      if (contentElement.scrollHeight === 0 || contentElement.clientHeight === 0) {
+        throw new Error('Content not ready for export. Please wait for the preview to load completely.')
+      }
 
-      // Temporarily adjust content for better PDF rendering
-      contentElement.style.width = `${pageWidth - margins.left - margins.right}mm`
-      contentElement.style.padding = '20px'
-      contentElement.style.backgroundColor = '#ffffff'
+      // Save original styles and resize content for PDF
+      const originalStyles = this.resizeContentForPDF(
+        contentElement,
+        pageWidthMm,
+        pageHeightMm,
+        margins
+      )
 
-      // Capture content as canvas
-      const canvas = await this.captureHighQualityContent(contentElement)
+      // Wait a bit for styles to be applied
+      await new Promise(resolve => setTimeout(resolve, 500))
+
+      // Capture content in sections to avoid splitting elements
+      const pageContentHeight = pageHeightPx - this.mmToPx(margins.top + margins.bottom, dpi)
+      const sections = await this.captureContentInSections(
+        contentElement,
+        pageContentHeight,
+        pageWidthPx,
+        margins
+      )
 
       // Restore original styles
-      contentElement.style.width = originalWidth
-      contentElement.style.padding = originalPadding
+      this.restoreContentStyles(contentElement, originalStyles)
 
-      // Calculate dimensions for PDF
-      const imgWidth = pageWidth - margins.left - margins.right
-      const imgHeight = (canvas.height * imgWidth) / canvas.width
-      const pageContentHeight = pageHeight - margins.top - margins.bottom
+      if (sections.length === 0) {
+        throw new Error('Unable to capture content for PDF export')
+      }
 
-      // Add content to PDF (handle multi-page if needed)
-      let yPosition = margins.top
-      let remainingHeight = imgHeight
-      let sourceY = 0
+      // Add sections to PDF
+      for (let i = 0; i < sections.length; i++) {
+        if (i > 0) {
+          pdf.addPage()
+        }
 
-      while (remainingHeight > 0) {
-        const currentPageHeight = Math.min(remainingHeight, pageContentHeight)
-        const currentSourceHeight =
-          (currentPageHeight * canvas.height) / imgHeight
+        const canvas = sections[i]
+        // Use mm units for PDF (jsPDF expects mm)
+        const imgWidthMm = pageWidthMm - margins.left - margins.right
+        const imgHeightMm = (canvas.height * imgWidthMm) / canvas.width
 
-        // Create a temporary canvas for this page
-        const pageCanvas = document.createElement('canvas')
-        const pageCtx = pageCanvas.getContext('2d')!
-        pageCanvas.width = canvas.width
-        pageCanvas.height = currentSourceHeight
-
-        // Draw the portion of the original canvas for this page
-        pageCtx.drawImage(
-          canvas,
-          0,
-          sourceY,
-          canvas.width,
-          currentSourceHeight,
-          0,
-          0,
-          canvas.width,
-          currentSourceHeight
-        )
-
-        // Add image to PDF
-        const pageDataUrl = pageCanvas.toDataURL(
-          'image/jpeg',
-          quality === 'high' ? 0.95 : quality === 'medium' ? 0.8 : 0.65
-        )
         pdf.addImage(
-          pageDataUrl,
+          canvas.toDataURL('image/jpeg', quality === 'high' ? 0.95 : quality === 'medium' ? 0.8 : 0.65),
           'JPEG',
           margins.left,
-          yPosition,
-          imgWidth,
-          currentPageHeight
+          margins.top,
+          imgWidthMm,
+          imgHeightMm
         )
-
-        remainingHeight -= currentPageHeight
-        sourceY += currentSourceHeight
-
-        // Add new page if there's more content
-        if (remainingHeight > 0) {
-          pdf.addPage()
-          yPosition = margins.top
-        }
       }
 
       // Add metadata

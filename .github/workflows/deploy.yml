@@ -2,9 +2,9 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [main]
+    branches: [master]
   pull_request:
-    branches: [main]
+    branches: [master]
   release:
     types: [published]
 
@@ -98,7 +98,7 @@ jobs:
   pre-release:
     needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, '[skip ci]')
+    if: github.ref == 'refs/heads/master' && !contains(github.event.head_commit.message, '[skip ci]')
 
     steps:
       - name: Checkout

@@ -1,47 +1,13 @@
 import { describe, it, expect } from 'vitest'
 import { LintService } from '../../src/lint/lintService'
 import {
-  escapeAsteriskRule,
   headingSpaceRule,
   fenceCloseRule,
+  boldSpacingRule,
 } from '../../src/lint/rules'
 
 describe('Lint Service', () => {
   const lintService = new LintService()
-
-  describe('escapeAsteriskRule', () => {
-    it('should detect unescaped asterisks', () => {
-      const content = 'This is a * character that should be escaped'
-      const results = escapeAsteriskRule.check(content)
-
-      expect(results).toHaveLength(1)
-      expect(results[0].message).toContain('Asterisk should be escaped')
-      expect(results[0].line).toBe(1)
-      expect(results[0].fixable).toBe(true)
-    })
-
-    it('should not flag escaped asterisks', () => {
-      const content = 'This is an \\* escaped asterisk'
-      const results = escapeAsteriskRule.check(content)
-
-      expect(results).toHaveLength(0)
-    })
-
-    it('should not flag emphasis asterisks', () => {
-      const content = 'This is *italic* text with **bold** text'
-      const results = escapeAsteriskRule.check(content)
-
-      expect(results).toHaveLength(0)
-    })
-
-    it('should fix unescaped asterisks', () => {
-      const content = 'This is a * character'
-      const results = escapeAsteriskRule.check(content)
-      const fixed = escapeAsteriskRule.fix!(content, results)
-
-      expect(fixed).toBe('This is a \\* character')
-    })
-  })
 
   describe('headingSpaceRule', () => {
     it('should detect headings without space', () => {
@@ -66,6 +32,33 @@ describe('Lint Service', () => {
       const fixed = headingSpaceRule.fix!(content, results)
 
       expect(fixed).toBe('# Heading\n## Another')
+    })
+  })
+
+  describe('boldSpacingRule', () => {
+    it('should detect bold text without spaces', () => {
+      const content = 'This is**bold**text'
+      const results = boldSpacingRule.check(content)
+
+      expect(results).toHaveLength(1)
+      expect(results[0].message).toContain('Bold text should have spaces before and after')
+      expect(results[0].line).toBe(1)
+      expect(results[0].fixable).toBe(true)
+    })
+
+    it('should not flag bold text with spaces', () => {
+      const content = 'This is **bold** text'
+      const results = boldSpacingRule.check(content)
+
+      expect(results).toHaveLength(0)
+    })
+
+    it('should fix bold text without spaces', () => {
+      const content = 'This is**bold**text'
+      const results = boldSpacingRule.check(content)
+      const fixed = boldSpacingRule.fix!(content, results)
+
+      expect(fixed).toBe('This is **bold** text')
     })
   })
 
@@ -106,10 +99,10 @@ describe('Lint Service', () => {
     })
 
     it('should apply fixes correctly', async () => {
-      const content = '#BadHeading\nThis is a * character'
+      const content = '#BadHeading\nThis is**bold**text'
       const report = await lintService.lintWithFixes(content)
 
-      expect(report.fixedContent).toBe('# BadHeading\nThis is a \\* character')
+      expect(report.fixedContent).toBe('# BadHeading\nThis is **bold** text')
     })
 
     it('should format results properly', async () => {

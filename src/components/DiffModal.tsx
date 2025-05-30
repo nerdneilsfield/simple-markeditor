@@ -171,11 +171,11 @@ export const DiffModal: React.FC<DiffModalProps> = ({
         {/* Content */}
         <div className="flex-1 min-h-0">
           {activeTab === 'diff' ? (
-            <div className="h-full overflow-hidden">
+            <div className="h-full flex flex-col">
               {hasChanges ? (
-                <div className="grid grid-cols-2 h-full">
+                <div className="grid grid-cols-2 flex-1 min-h-0">
                   {/* Original Content (Left) */}
-                  <div className="border-r border-gray-200 dark:border-gray-600 h-full flex flex-col">
+                  <div className="border-r border-gray-200 dark:border-gray-600 flex flex-col min-h-0">
                     <div className="bg-gray-50 dark:bg-gray-700 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-600 flex-shrink-0">
                       Original
                     </div>
@@ -185,7 +185,7 @@ export const DiffModal: React.FC<DiffModalProps> = ({
                           key={`original-${index}`}
                           className="flex py-1 min-h-[1.25rem]"
                         >
-                          <div className="w-8 text-xs text-gray-500 dark:text-gray-400 text-right mr-2 flex-shrink-0">
+                          <div className="w-8 text-xs text-gray-500 dark:text-gray-400 text-right mr-2 flex-shrink-0 sticky left-0 bg-white dark:bg-gray-800 z-10">
                             {index + 1}
                           </div>
                           <div className="flex-1 whitespace-pre-wrap text-gray-900 dark:text-gray-100 break-words">
@@ -197,7 +197,7 @@ export const DiffModal: React.FC<DiffModalProps> = ({
                   </div>
 
                   {/* Fixed Content (Right) */}
-                  <div className="h-full flex flex-col">
+                  <div className="flex flex-col min-h-0">
                     <div className="bg-gray-50 dark:bg-gray-700 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-600 flex-shrink-0">
                       Fixed
                     </div>
@@ -215,7 +215,7 @@ export const DiffModal: React.FC<DiffModalProps> = ({
                                 : ''
                             }`}
                           >
-                            <div className="w-8 text-xs text-gray-500 dark:text-gray-400 text-right mr-2 flex-shrink-0">
+                            <div className="w-8 text-xs text-gray-500 dark:text-gray-400 text-right mr-2 flex-shrink-0 sticky left-0 bg-white dark:bg-gray-800 z-10">
                               {index + 1}
                             </div>
                             <div className="flex-1 whitespace-pre-wrap text-gray-900 dark:text-gray-100 break-words">

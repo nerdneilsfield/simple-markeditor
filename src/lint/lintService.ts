@@ -165,7 +165,7 @@ export class LintService {
 }
 
 // Create default singleton instance
-export const lintService = new LintService()
+export const lintService = new LintService(defaultRules.map(rule => rule.id))
 
 // Export for easier testing
 export { defaultRules } from './rules'
