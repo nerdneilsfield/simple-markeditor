@@ -13,7 +13,7 @@ interface EditorMobileProps {
 export const EditorMobile: React.FC<EditorMobileProps> = ({
   value,
   onChange,
-  theme
+  theme,
 }) => {
   const editorRef = useRef<HTMLDivElement>(null)
   const viewRef = useRef<EditorView | null>(null)
@@ -23,7 +23,7 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
 
     const extensions = [
       markdown(),
-      EditorView.updateListener.of((update) => {
+      EditorView.updateListener.of(update => {
         if (update.docChanged) {
           onChange(update.state.doc.toString())
         }
@@ -31,22 +31,23 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
       EditorView.theme({
         '&': {
           fontSize: '16px', // Prevent zoom on mobile
-          fontFamily: '"SF Mono", "Monaco", "Inconsolata", monospace'
+          fontFamily:
+            '"SF Mono", "Source Code Pro", "Monaco", "Inconsolata", "Consolas", "Noto Sans Mono CJK SC", "Noto Sans Mono CJK TC", "Noto Sans Mono CJK JP", monospace',
         },
         '.cm-content': {
           padding: '16px',
-          lineHeight: '1.6'
+          lineHeight: '1.6',
         },
         '.cm-focused': {
-          outline: 'none'
+          outline: 'none',
         },
         '.cm-editor': {
-          height: '100%'
+          height: '100%',
         },
         '.cm-scroller': {
-          fontSize: '16px'
-        }
-      })
+          fontSize: '16px',
+        },
+      }),
     ]
 
     // Add dark theme if needed
@@ -56,20 +57,20 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
 
     const state = EditorState.create({
       doc: value,
-      extensions
+      extensions,
     })
 
     const view = new EditorView({
       state,
-      parent: editorRef.current
+      parent: editorRef.current,
     })
 
     viewRef.current = view
 
     // Add save functionality
     const handleSave = () => {
-      const event = new CustomEvent('editor-save', { 
-        detail: { content: view.state.doc.toString() } 
+      const event = new CustomEvent('editor-save', {
+        detail: { content: view.state.doc.toString() },
       })
       window.dispatchEvent(event)
     }
@@ -96,8 +97,8 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
         changes: {
           from: 0,
           to: viewRef.current.state.doc.length,
-          insert: value
-        }
+          insert: value,
+        },
       })
     }
   }, [value])

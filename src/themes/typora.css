@@ -4,20 +4,20 @@
   --text-color: #333333;
   --text-muted: #999999;
   --text-subtle: #cccccc;
-  
+
   /* Background colors */
   --bg-color: #fefefe;
   --bg-secondary: #f8f8f8;
   --bg-tertiary: #f0f0f0;
-  
+
   /* Border colors */
   --border-color: #e7e7e7;
   --border-muted: #dddddd;
-  
+
   /* Code colors */
   --code-bg: #f8f8f8;
   --code-color: #e96900;
-  
+
   /* Syntax highlighting */
   --syntax-comment: #999999;
   --syntax-string: #690;
@@ -26,26 +26,28 @@
   --syntax-number: #905;
   --syntax-operator: #a67f59;
   --syntax-variable: #e90;
-  
+
   /* Link colors */
   --link-color: #4183c4;
   --link-hover: #369;
-  
+
   /* Quote colors */
   --quote-border: #dfe2e5;
   --quote-bg: transparent;
-  
+
   /* Table colors */
   --table-border: #dfe2e5;
   --table-bg-even: #f6f8fa;
-  
+
   /* Accent colors */
   --accent-color: #4183c4;
   --accent-light: #e6f3ff;
 }
 
 body {
-  font-family: "Open Sans", "Clear Sans", "Helvetica Neue", Helvetica, Arial, 'Segoe UI Emoji', sans-serif;
+  font-family:
+    'Open Sans', 'Clear Sans', 'Helvetica Neue', Helvetica, Arial,
+    'Segoe UI Emoji', sans-serif;
   font-size: 16px;
   line-height: 1.6;
   color: var(--text-color);
@@ -57,7 +59,12 @@ body {
 }
 
 /* Headings */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin-top: 1.2em;
   margin-bottom: 0.6em;
   font-weight: bold;
@@ -67,22 +74,32 @@ h1, h2, h3, h4, h5, h6 {
   position: relative;
 }
 
-h1 { 
+h1 {
   font-size: 2.25em;
   line-height: 1.2;
   border-bottom: 1px solid var(--border-color);
   padding-bottom: 0.3em;
 }
-h2 { 
+h2 {
   font-size: 1.75em;
   line-height: 1.225;
   border-bottom: 1px solid var(--border-color);
   padding-bottom: 0.3em;
 }
-h3 { font-size: 1.5em; line-height: 1.43; }
-h4 { font-size: 1.25em; }
-h5 { font-size: 1em; }
-h6 { font-size: 1em; color: var(--text-muted); }
+h3 {
+  font-size: 1.5em;
+  line-height: 1.43;
+}
+h4 {
+  font-size: 1.25em;
+}
+h5 {
+  font-size: 1em;
+}
+h6 {
+  font-size: 1em;
+  color: var(--text-muted);
+}
 
 /* Paragraphs */
 p {
@@ -152,7 +169,8 @@ blockquote > :last-child {
 }
 
 /* Lists */
-ul, ol {
+ul,
+ol {
   margin: 0.8em 0;
   padding-left: 2em;
 }
@@ -202,7 +220,7 @@ hr {
 }
 
 /* Task lists */
-input[type="checkbox"] {
+input[type='checkbox'] {
   margin-right: 0.5em;
   cursor: pointer;
 }
@@ -243,12 +261,18 @@ em {
     margin: 0;
     background: white;
   }
-  
-  h1, h2, h3, h4, h5, h6 {
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     page-break-after: avoid;
   }
-  
-  pre, blockquote {
+
+  pre,
+  blockquote {
     page-break-inside: avoid;
   }
 }

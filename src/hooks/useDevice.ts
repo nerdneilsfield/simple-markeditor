@@ -22,13 +22,17 @@ export const useIsMobile = (): boolean => {
 export const useIsTablet = (): boolean => {
   const [isTablet, setIsTablet] = useState(() => {
     if (typeof window === 'undefined') return false
-    return window.matchMedia('(min-width: 768px) and (max-width: 1024px) and (orientation: portrait)').matches
+    return window.matchMedia(
+      '(min-width: 768px) and (max-width: 1024px) and (orientation: portrait)'
+    ).matches
   })
 
   useEffect(() => {
     if (typeof window === 'undefined') return
 
-    const mediaQuery = window.matchMedia('(min-width: 768px) and (max-width: 1024px) and (orientation: portrait)')
+    const mediaQuery = window.matchMedia(
+      '(min-width: 768px) and (max-width: 1024px) and (orientation: portrait)'
+    )
     const handleChange = (e: MediaQueryListEvent) => setIsTablet(e.matches)
 
     mediaQuery.addEventListener('change', handleChange)

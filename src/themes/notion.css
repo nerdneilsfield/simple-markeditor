@@ -4,20 +4,20 @@
   --text-color: #37352f;
   --text-muted: #787774;
   --text-subtle: #9b9a97;
-  
+
   /* Background colors */
   --bg-color: #ffffff;
   --bg-secondary: #f7f6f3;
   --bg-tertiary: #e9e9e7;
-  
+
   /* Border colors */
   --border-color: #e9e9e7;
   --border-muted: #e3e2e0;
-  
+
   /* Code colors */
   --code-bg: #f7f6f3;
   --code-color: #eb5757;
-  
+
   /* Syntax highlighting */
   --syntax-comment: #787774;
   --syntax-string: #448361;
@@ -26,22 +26,32 @@
   --syntax-number: #d9730d;
   --syntax-operator: #9065b0;
   --syntax-variable: #d9730d;
-  
+
   /* Link colors */
   --link-color: #337ea9;
   --link-hover: #2a6a96;
-  
+
   /* Quote colors */
   --quote-border: #e9e9e7;
   --quote-bg: #f7f6f3;
-  
+
   /* Table colors */
   --table-border: #e9e9e7;
   --table-bg-even: #f7f6f3;
 }
 
 body {
-  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family:
+    ui-sans-serif,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Helvetica,
+    'Apple Color Emoji',
+    Arial,
+    sans-serif,
+    'Segoe UI Emoji',
+    'Segoe UI Symbol';
   font-size: 16px;
   line-height: 1.5;
   color: var(--text-color);
@@ -52,7 +62,12 @@ body {
 }
 
 /* Headings */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin-top: 2em;
   margin-bottom: 4px;
   font-weight: 600;
@@ -60,17 +75,28 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--text-color);
 }
 
-h1 { 
-  font-size: 1.875em; 
+h1 {
+  font-size: 1.875em;
   font-weight: 700;
   margin-top: 0;
   margin-bottom: 1rem;
 }
-h2 { font-size: 1.5em; }
-h3 { font-size: 1.25em; }
-h4 { font-size: 1.125em; }
-h5 { font-size: 1em; }
-h6 { font-size: 0.875em; color: var(--text-muted); }
+h2 {
+  font-size: 1.5em;
+}
+h3 {
+  font-size: 1.25em;
+}
+h4 {
+  font-size: 1.125em;
+}
+h5 {
+  font-size: 1em;
+}
+h6 {
+  font-size: 0.875em;
+  color: var(--text-muted);
+}
 
 /* Paragraphs */
 p {
@@ -99,7 +125,8 @@ code {
   margin: 0;
   font-size: 85%;
   border-radius: 3px;
-  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  font-family:
+    'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
   font-weight: 500;
 }
 
@@ -135,7 +162,8 @@ blockquote {
 }
 
 /* Lists */
-ul, ol {
+ul,
+ol {
   margin: 1px 0;
   padding-left: 1.1em;
 }
@@ -194,7 +222,7 @@ hr {
 }
 
 /* Task lists */
-input[type="checkbox"] {
+input[type='checkbox'] {
   margin-right: 0.5em;
 }
 

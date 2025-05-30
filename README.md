@@ -87,6 +87,7 @@ The built-in linter helps maintain clean Markdown:
 ### Settings
 
 Access the settings drawer to:
+
 - Switch between English and Chinese
 - Toggle individual lint rules
 - Change themes
@@ -136,6 +137,7 @@ pnpm lint && pnpm test && pnpm e2e
 ```
 
 Test coverage goals:
+
 - **General**: 90% coverage
 - **Lint algorithms**: 100% coverage
 - **E2E**: Critical user workflows
@@ -164,8 +166,9 @@ Test coverage goals:
 ## 🎯 Performance
 
 Target metrics (achieved):
+
 - **Bundle size**: ≤ 650KB gzipped
-- **First load**: ≤ 2s desktop, ≤ 3s mobile  
+- **First load**: ≤ 2s desktop, ≤ 3s mobile
 - **Render latency**: ≤ 200ms desktop, ≤ 300ms mobile
 - **Lighthouse score**: ≥ 85
 
@@ -235,4 +238,4 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 **Made with ❤️ for the Markdown community**
 
-*Built during a 1-day sprint as a comprehensive demonstration of modern frontend development practices.*
+_Built during a 1-day sprint as a comprehensive demonstration of modern frontend development practices._

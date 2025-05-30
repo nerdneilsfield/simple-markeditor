@@ -1,9 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   darkMode: 'class',
   theme: {
     extend: {
@@ -23,7 +20,7 @@ export default {
           700: '#374151',
           800: '#1f2937',
           900: '#111827',
-        }
+        },
       },
       animation: {
         'slide-in-right': 'slideInRight 0.3s ease-out',
@@ -37,8 +34,8 @@ export default {
         fadeIn: {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' },
-        }
-      }
+        },
+      },
     },
   },
   plugins: [],

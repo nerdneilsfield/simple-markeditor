@@ -9,17 +9,15 @@ interface SettingsDrawerProps {
   onClose: () => void
 }
 
-export const SettingsDrawer: React.FC<SettingsDrawerProps> = ({ isOpen, onClose }) => {
+export const SettingsDrawer: React.FC<SettingsDrawerProps> = ({
+  isOpen,
+  onClose,
+}) => {
   const { t, i18n } = useTranslation()
   const drawerRef = useRef<HTMLDivElement>(null)
-  
-  const { 
-    language,
-    setLanguage,
-    lintSettings,
-    setLintSettings,
-    reset
-  } = useAppStore()
+
+  const { language, setLanguage, lintSettings, setLintSettings, reset } =
+    useAppStore()
 
   // Close drawer on Escape key
   useEffect(() => {
@@ -46,24 +44,37 @@ export const SettingsDrawer: React.FC<SettingsDrawerProps> = ({ isOpen, onClose 
 
   // Handle lint setting toggle
   const handleLintToggle = (ruleId: string, enabled: boolean) => {
-    if (ruleId === 'escape-asterisk') {
-      setLintSettings({ escapeAsterisk: enabled })
+    if (ruleId === 'unescape-markdown') {
+      setLintSettings({ unescapeMarkdown: enabled })
     } else if (ruleId === 'heading-space') {
       setLintSettings({ headingSpace: enabled })
     } else if (ruleId === 'fence-close') {
       setLintSettings({ fenceClose: enabled })
+    } else if (ruleId === 'math-formula') {
+      setLintSettings({ mathFormula: enabled })
+    } else if (ruleId === 'emphasis-style') {
+      setLintSettings({ emphasisStyle: enabled })
+    } else if (ruleId === 'list-marker-style') {
+      setLintSettings({ listMarkerStyle: enabled })
     }
   }
 
   const getLintSettingValue = (ruleId: string): boolean => {
-    if (ruleId === 'escape-asterisk') return lintSettings.escapeAsterisk
+    if (ruleId === 'unescape-markdown') return lintSettings.unescapeMarkdown
     if (ruleId === 'heading-space') return lintSettings.headingSpace
     if (ruleId === 'fence-close') return lintSettings.fenceClose
+    if (ruleId === 'math-formula') return lintSettings.mathFormula
+    if (ruleId === 'emphasis-style') return lintSettings.emphasisStyle
+    if (ruleId === 'list-marker-style') return lintSettings.listMarkerStyle
     return false
   }
 
   const handleReset = () => {
-    if (confirm(t('Are you sure you want to reset all data? This cannot be undone.'))) {
+    if (
+      confirm(
+        t('Are you sure you want to reset all data? This cannot be undone.')
+      )
+    ) {
       reset()
       onClose()
     }
@@ -74,13 +85,13 @@ export const SettingsDrawer: React.FC<SettingsDrawerProps> = ({ isOpen, onClose 
   return (
     <div className="fixed inset-0 z-50 lg:z-40">
       {/* Backdrop */}
-      <div 
+      <div
         className="absolute inset-0 bg-black bg-opacity-50 lg:bg-transparent"
         onClick={onClose}
       />
-      
+
       {/* Drawer */}
-      <div 
+      <div
         ref={drawerRef}
         className={`
           absolute right-0 top-0 h-full w-full max-w-sm bg-white dark:bg-gray-800 shadow-xl
@@ -97,8 +108,18 @@ export const SettingsDrawer: React.FC<SettingsDrawerProps> = ({ isOpen, onClose 
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
@@ -117,10 +138,12 @@ export const SettingsDrawer: React.FC<SettingsDrawerProps> = ({ isOpen, onClose 
                   name="language"
                   value="en"
                   checked={language === 'en'}
-                  onChange={(e) => handleLanguageChange(e.target.value)}
+                  onChange={e => handleLanguageChange(e.target.value)}
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
                 />
-                <span className="ml-3 text-sm text-gray-900 dark:text-gray-100">English</span>
+                <span className="ml-3 text-sm text-gray-900 dark:text-gray-100">
+                  English
+                </span>
               </label>
               <label className="flex items-center">
                 <input
@@ -128,10 +151,12 @@ export const SettingsDrawer: React.FC<SettingsDrawerProps> = ({ isOpen, onClose 
                   name="language"
                   value="zh-CN"
                   checked={language === 'zh-CN'}
-                  onChange={(e) => handleLanguageChange(e.target.value)}
+                  onChange={e => handleLanguageChange(e.target.value)}
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
                 />
-                <span className="ml-3 text-sm text-gray-900 dark:text-gray-100">中文</span>
+                <span className="ml-3 text-sm text-gray-900 dark:text-gray-100">
+                  中文
+                </span>
               </label>
             </div>
           </div>
@@ -147,12 +172,12 @@ export const SettingsDrawer: React.FC<SettingsDrawerProps> = ({ isOpen, onClose 
               {t('settings_drawer.lint_rules')}
             </label>
             <div className="space-y-3">
-              {defaultRules.map((rule) => (
+              {defaultRules.map(rule => (
                 <label key={rule.id} className="flex items-start">
                   <input
                     type="checkbox"
                     checked={getLintSettingValue(rule.id)}
-                    onChange={(e) => handleLintToggle(rule.id, e.target.checked)}
+                    onChange={e => handleLintToggle(rule.id, e.target.checked)}
                     className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mt-0.5"
                   />
                   <div className="ml-3">
@@ -175,10 +200,14 @@ export const SettingsDrawer: React.FC<SettingsDrawerProps> = ({ isOpen, onClose 
             </h3>
             <div className="text-sm text-gray-600 dark:text-gray-400 space-y-2">
               <div>
-                <span className="font-medium">{t('settings_drawer.version')}:</span> 1.0.0
+                <span className="font-medium">
+                  {t('settings_drawer.version')}:
+                </span>{' '}
+                1.0.0
               </div>
               <div>
-                <span className="font-medium">Build:</span> {new Date().toISOString().split('T')[0]}
+                <span className="font-medium">Build:</span>{' '}
+                {new Date().toISOString().split('T')[0]}
               </div>
               <div className="text-xs">
                 Zero-backend Markdown editor with PDF export

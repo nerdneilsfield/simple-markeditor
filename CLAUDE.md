@@ -39,16 +39,19 @@ The application follows a modular architecture:
 ## Key Implementation Details
 
 1. **Performance Targets**:
+
    - Bundle size: ≤ 650KB gzipped
    - First load: ≤ 2s desktop, ≤ 3s mobile
    - Render latency: ≤ 200ms desktop, ≤ 300ms mobile
 
 2. **Security**:
+
    - All preview content rendered in sandboxed iframe
    - DOMPurify for HTML sanitization
    - CSP headers configured
 
 3. **Component Guidelines**:
+
    - Use functional components with TypeScript
    - Component size limit: 400 LoC
    - Strict TypeScript mode enabled

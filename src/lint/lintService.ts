@@ -46,7 +46,7 @@ export class LintService {
     return {
       results: allResults,
       hasErrors,
-      hasWarnings
+      hasWarnings,
     }
   }
 
@@ -80,17 +80,17 @@ export class LintService {
 
   async lintWithFixes(content: string): Promise<LintReport> {
     const report = await this.lint(content)
-    
+
     if (report.results.some(r => r.fixable)) {
       const fixedContent = this.applyFixes(content, report.results)
-      
+
       // Re-lint the fixed content to get updated results
       const fixedReport = await this.lint(fixedContent)
-      
+
       return {
         ...report,
         fixedContent,
-        results: fixedReport.results
+        results: fixedReport.results,
       }
     }
 
@@ -107,12 +107,12 @@ export class LintService {
 
   getRuleCounts(results: LintRuleResult[]): Map<string, number> {
     const counts = new Map<string, number>()
-    
+
     results.forEach(result => {
       const current = counts.get(result.ruleId) || 0
       counts.set(result.ruleId, current + 1)
     })
-    
+
     return counts
   }
 
@@ -122,10 +122,10 @@ export class LintService {
     }
 
     const lines: string[] = []
-    
+
     lines.push(`Found ${results.length} lint issue(s):`)
     lines.push('')
-    
+
     // Group by rule
     const groupedResults = new Map<string, LintRuleResult[]>()
     results.forEach(result => {
@@ -133,27 +133,33 @@ export class LintService {
       group.push(result)
       groupedResults.set(result.ruleId, group)
     })
-    
+
     for (const [ruleId, ruleResults] of groupedResults) {
       const rule = this.getAvailableRules().find(r => r.id === ruleId)
       const ruleName = rule ? rule.name : ruleId
-      
-      lines.push(`📋 ${ruleName} (${ruleResults.length} issue${ruleResults.length > 1 ? 's' : ''})`)
-      
+
+      lines.push(
+        `📋 ${ruleName} (${ruleResults.length} issue${ruleResults.length > 1 ? 's' : ''})`
+      )
+
       ruleResults.forEach(result => {
         const icon = result.severity === 'error' ? '❌' : '⚠️'
         const fixable = result.fixable ? ' [fixable]' : ''
-        lines.push(`  ${icon} Line ${result.line}, Column ${result.column}: ${result.message}${fixable}`)
+        lines.push(
+          `  ${icon} Line ${result.line}, Column ${result.column}: ${result.message}${fixable}`
+        )
       })
-      
+
       lines.push('')
     }
-    
+
     const fixableCount = results.filter(r => r.fixable).length
     if (fixableCount > 0) {
-      lines.push(`💡 ${fixableCount} issue${fixableCount > 1 ? 's' : ''} can be automatically fixed`)
+      lines.push(
+        `💡 ${fixableCount} issue${fixableCount > 1 ? 's' : ''} can be automatically fixed`
+      )
     }
-    
+
     return lines.join('\n')
   }
 }

@@ -4,20 +4,20 @@
   --text-color: #2e3440;
   --text-muted: #5e81ac;
   --text-subtle: #81a1c1;
-  
+
   /* Background colors */
   --bg-color: #ffffff;
   --bg-secondary: #f8f9fa;
   --bg-tertiary: #eceff4;
-  
+
   /* Border colors */
   --border-color: #d8dee9;
   --border-muted: #e5e9f0;
-  
+
   /* Code colors */
   --code-bg: #f8f9fa;
   --code-color: #bf616a;
-  
+
   /* Syntax highlighting */
   --syntax-comment: #5e81ac;
   --syntax-string: #a3be8c;
@@ -26,26 +26,26 @@
   --syntax-number: #b48ead;
   --syntax-operator: #81a1c1;
   --syntax-variable: #d08770;
-  
+
   /* Link colors */
   --link-color: #5e81ac;
   --link-hover: #4c566a;
-  
+
   /* Quote colors */
   --quote-border: #d8dee9;
   --quote-bg: #f8f9fa;
-  
+
   /* Table colors */
   --table-border: #d8dee9;
   --table-bg-even: #f8f9fa;
-  
+
   /* Academic accent colors */
   --accent-primary: #5e81ac;
   --accent-secondary: #88c0d0;
 }
 
 body {
-  font-family: "Times New Roman", "Liberation Serif", "Nimbus Roman", serif;
+  font-family: 'Times New Roman', 'Liberation Serif', 'Nimbus Roman', serif;
   font-size: 16px;
   line-height: 1.6;
   color: var(--text-color);
@@ -58,8 +58,13 @@ body {
 }
 
 /* Headings with academic numbering style */
-h1, h2, h3, h4, h5, h6 {
-  font-family: "Georgia", "Liberation Serif", serif;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Georgia', 'Liberation Serif', serif;
   margin-top: 2rem;
   margin-bottom: 1rem;
   font-weight: 600;
@@ -85,10 +90,20 @@ h2 {
   padding-bottom: 0.5rem;
 }
 
-h3 { font-size: 1.4em; }
-h4 { font-size: 1.2em; }
-h5 { font-size: 1.1em; }
-h6 { font-size: 1em; color: var(--text-muted); font-style: italic; }
+h3 {
+  font-size: 1.4em;
+}
+h4 {
+  font-size: 1.2em;
+}
+h5 {
+  font-size: 1.1em;
+}
+h6 {
+  font-size: 1em;
+  color: var(--text-muted);
+  font-style: italic;
+}
 
 /* Paragraphs with proper academic spacing */
 p {
@@ -127,7 +142,7 @@ code {
   margin: 0;
   font-size: 0.9em;
   border-radius: 2px;
-  font-family: "Courier New", "Liberation Mono", monospace;
+  font-family: 'Courier New', 'Liberation Mono', monospace;
   border: 1px solid var(--border-muted);
 }
 
@@ -140,7 +155,7 @@ pre {
   border-radius: 4px;
   margin: 1.5rem 0;
   border: 1px solid var(--border-color);
-  font-family: "Courier New", "Liberation Mono", monospace;
+  font-family: 'Courier New', 'Liberation Mono', monospace;
 }
 
 pre code {
@@ -165,7 +180,7 @@ blockquote {
 }
 
 blockquote::before {
-  content: """;
+  content: '"';
   font-size: 3em;
   color: var(--accent-primary);
   position: absolute;
@@ -180,7 +195,8 @@ blockquote p {
 }
 
 /* Academic lists */
-ul, ol {
+ul,
+ol {
   margin: 1rem 0;
   padding-left: 2.5rem;
 }
@@ -200,7 +216,7 @@ ol li {
 }
 
 ol li::before {
-  content: counter(item, decimal) ". ";
+  content: counter(item, decimal) '. ';
   counter-increment: item;
   font-weight: bold;
   color: var(--accent-primary);
@@ -252,7 +268,7 @@ hr {
 }
 
 hr::after {
-  content: "❦";
+  content: '*';
   font-size: 1.5em;
   color: var(--accent-primary);
   background: var(--bg-color);
@@ -299,29 +315,35 @@ em {
     background: white;
     hyphens: auto;
   }
-  
+
   h1 {
     page-break-before: always;
   }
-  
+
   h1:first-child {
     page-break-before: avoid;
   }
-  
-  h2, h3, h4, h5, h6 {
+
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     page-break-after: avoid;
     margin-top: 1.5rem;
   }
-  
-  pre, blockquote, table {
+
+  pre,
+  blockquote,
+  table {
     page-break-inside: avoid;
   }
-  
+
   img {
     page-break-inside: avoid;
     max-height: 6in;
   }
-  
+
   @page {
     margin: 1in;
     @bottom-center {

@@ -26,21 +26,21 @@ graph TD
   style L fill:#fff,stroke:#888,stroke-dasharray: 5 5
 ```
 
-* **静态托管 (Cloudflare Pages)**：构建产物经自动 CI 发布，全球节点缓存；首次访问平均 < 150 ms。
-* **边缘缓存策略**：`Cache‑Control: public, max-age=31536000` 对 `*.js`/`*.css`；HTML 5 分钟。
-* **安全沙箱**：预览 iframe 加 `sandbox="allow‑same‑origin"`，并使用 **DOMPurify** 清洗渲染结果。
+- **静态托管 (Cloudflare Pages)**：构建产物经自动 CI 发布，全球节点缓存；首次访问平均 < 150 ms。
+- **边缘缓存策略**：`Cache‑Control: public, max-age=31536000` 对 `*.js`/`*.css`；HTML 5 分钟。
+- **安全沙箱**：预览 iframe 加 `sandbox="allow‑same‑origin"`，并使用 **DOMPurify** 清洗渲染结果。
 
 ---
 
 ## 2. 本地存储设计
 
-| Key                        | 说明                      | 类型               | 生命周期  |
-| -------------------------- | ----------------------- | ---------------- | ----- |
-| `md-content`               | Markdown 文本内容           | `string`         | 持久    |
-| `selected-theme`           | 当前主题 key                | `string`         | 持久    |
-| `i18n-lang`                | 语言选项                    | `string`         | 持久    |
-| `lint-settings`            | Lint 规则布尔映射             | `object`         | 持久    |
-| `draft‑timestamp`          | 最近保存时间                  | `number` (epoch) | 持久    |
+| Key                        | 说明                           | 类型             | 生命周期   |
+| -------------------------- | ------------------------------ | ---------------- | ---------- |
+| `md-content`               | Markdown 文本内容              | `string`         | 持久       |
+| `selected-theme`           | 当前主题 key                   | `string`         | 持久       |
+| `i18n-lang`                | 语言选项                       | `string`         | 持久       |
+| `lint-settings`            | Lint 规则布尔映射              | `object`         | 持久       |
+| `draft‑timestamp`          | 最近保存时间                   | `number` (epoch) | 持久       |
 | `__idb_assets` (IndexedDB) | 大于 5 MB 的 Markdown 文件缓存 | `Blob`           | 用户清理前 |
 
 ---
@@ -52,26 +52,26 @@ graph TD
 ```ts
 /** markdown.service.ts */
 export interface MarkdownService {
-  parse(md: string): Promise<string>; // 返回 HTML 字符串
-  highlight(html: string): Promise<string>; // Prism 高亮
+  parse(md: string): Promise<string> // 返回 HTML 字符串
+  highlight(html: string): Promise<string> // Prism 高亮
 }
 
 /** lint.service.ts */
 export interface LintRuleResult {
-  message: string;
-  line: number;
-  fix?: () => void; // 应用修复
+  message: string
+  line: number
+  fix?: () => void // 应用修复
 }
 export interface LintService {
-  run(md: string): Promise<LintRuleResult[]>;
-  applyFixes(md: string, results: LintRuleResult[]): string;
+  run(md: string): Promise<LintRuleResult[]>
+  applyFixes(md: string, results: LintRuleResult[]): string
 }
 
 /** storage.service.ts */
 export interface StorageService {
-  save(key: string, value: any): void;
-  load<T = any>(key: string): T | null;
-  clear(): void;
+  save(key: string, value: any): void
+  load<T = any>(key: string): T | null
+  clear(): void
 }
 ```
 
@@ -91,8 +91,8 @@ export interface StorageService {
 
 ## 5. 分块渲染（Backlog Feature）
 
-* **触发阈值**：Markdown 文本行数 > 10 k。
-* **机制**：
+- **触发阈值**：Markdown 文本行数 > 10 k。
+- **机制**：
 
   1. 编辑器滑动事件节流至 60 fps；
   2. 使用 `IntersectionObserver` 监听预览区域；
@@ -115,18 +115,18 @@ sequenceDiagram
   CF-->>Dev: Build Status & Preview URL
 ```
 
-* **分支策略**：`main` → 生产；`dev` → 日常集成。Pull Request 触发 Preview 环境。
-* **测试门槛**：CI 中运行 `vitest` + `playwright headless`；若单元/端到端失败，阻断部署。
+- **分支策略**：`main` → 生产；`dev` → 日常集成。Pull Request 触发 Preview 环境。
+- **测试门槛**：CI 中运行 `vitest` + `playwright headless`；若单元/端到端失败，阻断部署。
 
 ---
 
 ## 7. 安全与合规
 
-| 范畴  | 做法                                                                   |
-| --- | -------------------------------------------------------------------- |
-| XSS | DOMPurify 3.x + iframe sandbox；禁止 `script`, `on*` 属性                 |
-| 权限  | 无后端，无存储用户数据；隐私风险极低                                                   |
-| CSP | `Content-Security-Policy: default-src 'self' https:; img-src data:;` |
+| 范畴 | 做法                                                                 |
+| ---- | -------------------------------------------------------------------- |
+| XSS  | DOMPurify 3.x + iframe sandbox；禁止 `script`, `on*` 属性            |
+| 权限 | 无后端，无存储用户数据；隐私风险极低                                 |
+| CSP  | `Content-Security-Policy: default-src 'self' https:; img-src data:;` |
 
 ---
 
@@ -134,4 +134,4 @@ sequenceDiagram
 
 ---
 
-*如需修改，请在 Canvas 批注或聊天提出；确认无误后将进入 Stage 7（实施计划 & 开发指导）。*
+_如需修改，请在 Canvas 批注或聊天提出；确认无误后将进入 Stage 7（实施计划 & 开发指导）。_

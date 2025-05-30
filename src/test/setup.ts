@@ -17,14 +17,17 @@ Object.defineProperty(window, 'matchMedia', {
 })
 
 // Mock ResizeObserver
-;(globalThis as any).ResizeObserver = class ResizeObserver {
-  observe() {}
-  unobserve() {}
-  disconnect() {}
-}
+;(globalThis as unknown as { ResizeObserver: unknown }).ResizeObserver =
+  class ResizeObserver {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  }
 
 // Mock IntersectionObserver
-;(globalThis as any).IntersectionObserver = class IntersectionObserver {
+;(
+  globalThis as unknown as { IntersectionObserver: unknown }
+).IntersectionObserver = class IntersectionObserver {
   constructor() {}
   observe() {}
   unobserve() {}
@@ -56,18 +59,18 @@ const localStorageMock: Storage = {
     for (const key in storage) {
       delete storage[key]
     }
-  }
+  },
 }
 
 Object.defineProperty(window, 'localStorage', {
   value: localStorageMock,
-  writable: true
+  writable: true,
 })
 
 // Mock DOMPurify (handled by Vitest)
 vi.mock('dompurify', () => ({
   default: {
     sanitize: (html: string) => html,
-    isSupported: true
-  }
+    isSupported: true,
+  },
 }))

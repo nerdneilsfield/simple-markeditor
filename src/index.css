@@ -104,20 +104,20 @@ body {
   .editor-container {
     display: none !important;
   }
-  
+
   .preview-pane {
     width: 100% !important;
     height: auto !important;
     border: none !important;
   }
-  
+
   body {
     margin: 0 !important;
     padding: 0 !important;
     background: white !important;
     color: black !important;
   }
-  
+
   iframe {
     width: 100% !important;
     height: auto !important;
@@ -193,13 +193,13 @@ textarea:focus-visible {
   .monaco-editor {
     font-size: 16px !important; /* Prevent zoom on mobile */
   }
-  
+
   /* Improve touch targets */
   button {
     min-height: 44px;
     min-width: 44px;
   }
-  
+
   /* Better mobile typography */
   body {
     -webkit-text-size-adjust: 100%;
@@ -212,11 +212,11 @@ textarea:focus-visible {
   .border-gray-200 {
     @apply border-gray-900;
   }
-  
+
   .text-gray-600 {
     @apply text-gray-900;
   }
-  
+
   .bg-gray-50 {
     @apply bg-white;
   }

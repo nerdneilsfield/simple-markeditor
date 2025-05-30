@@ -7,12 +7,13 @@ import Editor from './components/Editor'
 import PreviewPane from './components/PreviewPane'
 import DiffModal from './components/DiffModal'
 import SettingsDrawer from './components/SettingsDrawer'
+import ExportDropdown from './components/ExportDropdown'
 import './i18n'
 
 function App() {
   const { t } = useTranslation()
   const isMobile = useIsMobile()
-  
+
   const {
     markdown,
     setMarkdown,
@@ -22,11 +23,19 @@ function App() {
     isMobilePreviewMode,
     setMobilePreviewMode,
     lintSettings,
-    exportToPDF
+    exportToPDF,
+    exportForDesktop,
+    exportForMobile,
+    exportForEReader,
+    formatMarkdown,
+    fixMarkdown,
   } = useAppStore()
 
   const [isDiffModalOpen, setIsDiffModalOpen] = useState(false)
-  const [lintReport, setLintReport] = useState<{ original: string; fixed: string } | null>(null)
+  const [lintReport, setLintReport] = useState<{
+    original: string
+    fixed: string
+  } | null>(null)
   const [isLinting, setIsLinting] = useState(false)
 
   // Initialize store on app start
@@ -40,26 +49,29 @@ function App() {
       .filter(([_, enabled]) => enabled)
       .map(([key, _]) => {
         // Convert camelCase to kebab-case
-        if (key === 'escapeAsterisk') return 'escape-asterisk'
+        if (key === 'unescapeMarkdown') return 'unescape-markdown'
         if (key === 'headingSpace') return 'heading-space'
         if (key === 'fenceClose') return 'fence-close'
+        if (key === 'mathFormula') return 'math-formula'
+        if (key === 'emphasisStyle') return 'emphasis-style'
+        if (key === 'listMarkerStyle') return 'list-marker-style'
         return key
       })
-    
+
     lintService.setEnabledRules(enabledRules)
   }, [lintSettings])
 
   const handleLintAndFix = async () => {
     if (isLinting) return
-    
+
     setIsLinting(true)
     try {
       const report = await lintService.lintWithFixes(markdown)
-      
+
       if (report.fixedContent && report.fixedContent !== markdown) {
         setLintReport({
           original: markdown,
-          fixed: report.fixedContent
+          fixed: report.fixedContent,
         })
         setIsDiffModalOpen(true)
       } else {
@@ -93,7 +105,7 @@ function App() {
           <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
             {t('title')}
           </h1>
-          
+
           <div className="flex items-center space-x-3">
             {/* Mobile view toggle */}
             {isMobile && (
@@ -120,16 +132,33 @@ function App() {
                 </button>
               </div>
             )}
-            
-            {/* Export PDF */}
+
+            {/* Export Options */}
+            <ExportDropdown
+              onExportPrint={exportToPDF}
+              onExportDesktop={exportForDesktop}
+              onExportMobile={exportForMobile}
+              onExportEReader={exportForEReader}
+            />
+
+            {/* Format */}
             <button
-              onClick={exportToPDF}
-              title={t('toolbar.export')}
-              className="px-3 py-1.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors"
+              onClick={formatMarkdown}
+              title="Format with Prettier"
+              className="px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors"
             >
-              📄 {t('export')}
+              ✨ Format
             </button>
-            
+
+            {/* Fix */}
+            <button
+              onClick={fixMarkdown}
+              title="Fix with lint rules"
+              className="px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors"
+            >
+              🔧 Fix
+            </button>
+
             {/* Lint & Fix */}
             <button
               onClick={handleLintAndFix}
@@ -139,16 +168,31 @@ function App() {
             >
               {isLinting ? '⏳' : '🧹'} {t('lint')}
             </button>
-            
+
             {/* Settings */}
             <button
               onClick={() => setSettingsOpen(!isSettingsOpen)}
               title={t('toolbar.settings')}
               className="p-1.5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
               </svg>
             </button>
           </div>
@@ -163,9 +207,9 @@ function App() {
             {isMobilePreviewMode ? (
               <PreviewPane markdown={markdown} theme={selectedTheme} />
             ) : (
-              <Editor 
-                value={markdown} 
-                onChange={handleEditorChange} 
+              <Editor
+                value={markdown}
+                onChange={handleEditorChange}
                 theme={selectedTheme}
               />
             )}
@@ -174,9 +218,9 @@ function App() {
           // Desktop layout: side by side
           <>
             <div className="flex-1 border-r border-gray-200 dark:border-gray-700">
-              <Editor 
-                value={markdown} 
-                onChange={handleEditorChange} 
+              <Editor
+                value={markdown}
+                onChange={handleEditorChange}
                 theme={selectedTheme}
               />
             </div>
@@ -188,7 +232,7 @@ function App() {
       </div>
 
       {/* Settings drawer */}
-      <SettingsDrawer 
+      <SettingsDrawer
         isOpen={isSettingsOpen}
         onClose={() => setSettingsOpen(false)}
       />

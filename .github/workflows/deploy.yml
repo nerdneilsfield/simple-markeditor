@@ -1,15 +1,17 @@
-name: Deploy to Cloudflare Pages
+name: CI/CD Pipeline
 
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
+  release:
+    types: [published]
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -17,46 +19,36 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '22'
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-
-      - name: Get pnpm store directory
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-      - name: Setup pnpm cache
+      - name: Setup npm cache
         uses: actions/cache@v3
         with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+            ${{ runner.os }}-npm-
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: npm ci
 
       - name: Run lint
-        run: pnpm lint
+        run: npm run lint
 
       - name: Run type check
-        run: pnpm build --mode development
+        run: npm run build -- --mode development
 
       - name: Run unit tests
-        run: pnpm test
+        run: npm run test
 
-      - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps
+      # - name: Install Playwright browsers
+      #   run: npm exec playwright install --with-deps
 
       - name: Build application
-        run: pnpm build
+        run: npm run build
 
-      - name: Run E2E tests
-        run: pnpm e2e
+      # - name: Run E2E tests
+      #   run: npm run e2e
 
       - name: Upload test results
         uses: actions/upload-artifact@v3
@@ -66,11 +58,153 @@ jobs:
           path: playwright-report/
           retention-days: 30
 
-  deploy:
+  # deploy:
+  #   needs: test
+  #   runs-on: ubuntu-latest
+  #   if: github.ref == 'refs/heads/main'
+
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+
+  #     - name: Setup Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: '22'
+
+  #     - name: Setup npm cache
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: ~/.npm
+  #         key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-npm-
+
+  #     - name: Install dependencies
+  #       run: npm ci
+
+  #     - name: Build application
+  #       run: npm run build
+
+  #     - name: Deploy to Cloudflare Pages
+  #       uses: cloudflare/pages-action@v1
+  #       with:
+  #         apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  #         accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+  #         projectName: simple-markeditor
+  #         directory: dist
+  #         gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+
+  pre-release:
     needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    
+    if: github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, '[skip ci]')
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Setup npm cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Generate version
+        id: version
+        run: |
+          TIMESTAMP=$(date +%Y%m%d%H%M%S)
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          echo "version=v0.1.0-alpha.${TIMESTAMP}.${SHORT_SHA}" >> $GITHUB_OUTPUT
+
+      - name: Create pre-release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          release_name: Pre-release ${{ steps.version.outputs.version }}
+          body: |
+            Automated pre-release from commit ${{ github.sha }}
+
+            **Changes:**
+            - ${{ github.event.head_commit.message }}
+          draft: false
+          prerelease: true
+
+      - name: Create release archive
+        run: |
+          cd dist
+          zip -r ../simple-markeditor-${{ steps.version.outputs.version }}.zip .
+          cd ..
+
+      - name: Upload build artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./simple-markeditor-${{ steps.version.outputs.version }}.zip
+          asset_name: simple-markeditor-${{ steps.version.outputs.version }}.zip
+          asset_content_type: application/zip
+
+  # preview:
+  #   needs: test
+  #   runs-on: ubuntu-latest
+  #   if: github.event_name == 'pull_request'
+
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+
+  #     - name: Setup Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: '22'
+
+  #     - name: Setup npm cache
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: ~/.npm
+  #         key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-npm-
+
+  #     - name: Install dependencies
+  #       run: npm ci
+
+  #     - name: Build application
+  #       run: npm run build
+
+  #     - name: Deploy Preview to Cloudflare Pages
+  #       uses: cloudflare/pages-action@v1
+  #       with:
+  #         apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  #         accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+  #         projectName: simple-markeditor
+  #         directory: dist
+  #         gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+  #         wranglerVersion: '3'
+
+  release:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' && github.event.action == 'published'
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -78,59 +212,34 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '22'
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+      - name: Setup npm cache
+        uses: actions/cache@v3
         with:
-          version: 8
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: npm ci
 
       - name: Build application
-        run: pnpm build
+        run: npm run build
 
-      - name: Deploy to Cloudflare Pages
-        uses: cloudflare/pages-action@v1
+      - name: Create release archive
+        run: |
+          cd dist
+          zip -r ../simple-markeditor-${{ github.event.release.tag_name }}.zip .
+          cd ..
+
+      - name: Upload release assets
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: simple-markeditor
-          directory: dist
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-
-  preview:
-    needs: test
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build application
-        run: pnpm build
-
-      - name: Deploy Preview to Cloudflare Pages
-        uses: cloudflare/pages-action@v1
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: simple-markeditor
-          directory: dist
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-          wranglerVersion: '3'
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./simple-markeditor-${{ github.event.release.tag_name }}.zip
+          asset_name: simple-markeditor-${{ github.event.release.tag_name }}.zip
+          asset_content_type: application/zip

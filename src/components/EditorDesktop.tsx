@@ -1,6 +1,15 @@
 import { useRef } from 'react'
-import Editor from '@monaco-editor/react'
-import type { editor } from 'monaco-editor'
+import Editor, { loader } from '@monaco-editor/react'
+
+// Configure Monaco to use Vite's bundled version
+import * as monaco from 'monaco-editor'
+loader.config({ monaco })
+// Monaco editor types
+type MonacoEditor = {
+  updateOptions: (options: object) => void
+  addCommand: (keybinding: number, handler: () => void) => void
+  getValue: () => string
+}
 
 interface EditorDesktopProps {
   value: string
@@ -11,13 +20,13 @@ interface EditorDesktopProps {
 export const EditorDesktop: React.FC<EditorDesktopProps> = ({
   value,
   onChange,
-  theme
+  theme,
 }) => {
-  const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null)
+  const editorRef = useRef<MonacoEditor | null>(null)
 
-  const handleEditorDidMount = (editor: editor.IStandaloneCodeEditor) => {
+  const handleEditorDidMount = (editor: MonacoEditor) => {
     editorRef.current = editor
-    
+
     // Configure editor options for Markdown
     editor.updateOptions({
       wordWrap: 'on',
@@ -25,7 +34,8 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
       minimap: { enabled: false },
       scrollBeyondLastLine: false,
       fontSize: 14,
-      fontFamily: '"Fira Code", "Monaco", "Menlo", monospace',
+      fontFamily:
+        '"Fira Code", "Source Code Pro", "SF Mono", "Monaco", "Inconsolata", "Consolas", "Noto Sans Mono CJK SC", "Noto Sans Mono CJK TC", "Noto Sans Mono CJK JP", monospace',
       lineHeight: 1.6,
       automaticLayout: true,
       suggest: {
@@ -54,12 +64,15 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
         showTypeParameters: false,
         showUsers: false,
         showIssues: false,
-      }
+      },
     })
 
     // Add Ctrl+S save functionality
-    editor.addCommand(2048 + 49, () => { // Ctrl+S
-      const event = new CustomEvent('editor-save', { detail: { content: editor.getValue() } })
+    editor.addCommand(2048 + 49, () => {
+      // Ctrl+S
+      const event = new CustomEvent('editor-save', {
+        detail: { content: editor.getValue() },
+      })
       window.dispatchEvent(event)
     })
   }
@@ -81,9 +94,10 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
           minimap: { enabled: false },
           scrollBeyondLastLine: false,
           fontSize: 14,
-          fontFamily: '"Fira Code", "Monaco", "Menlo", monospace',
+          fontFamily:
+            '"Fira Code", "Source Code Pro", "SF Mono", "Monaco", "Inconsolata", "Consolas", "Noto Sans Mono CJK SC", "Noto Sans Mono CJK TC", "Noto Sans Mono CJK JP", monospace',
           lineHeight: 1.6,
-          automaticLayout: true
+          automaticLayout: true,
         }}
       />
     </div>

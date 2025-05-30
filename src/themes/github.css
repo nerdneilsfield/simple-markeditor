@@ -4,20 +4,20 @@
   --text-color: #24292f;
   --text-muted: #656d76;
   --text-subtle: #8c959f;
-  
+
   /* Background colors */
   --bg-color: #ffffff;
   --bg-secondary: #f6f8fa;
   --bg-tertiary: #eaeef2;
-  
+
   /* Border colors */
   --border-color: #d0d7de;
   --border-muted: #d8dee4;
-  
+
   /* Code colors */
   --code-bg: #f6f8fa;
   --code-color: #24292f;
-  
+
   /* Syntax highlighting */
   --syntax-comment: #6a737d;
   --syntax-string: #032f62;
@@ -26,22 +26,24 @@
   --syntax-number: #005cc5;
   --syntax-operator: #d73a49;
   --syntax-variable: #e36209;
-  
+
   /* Link colors */
   --link-color: #0969da;
   --link-hover: #0550ae;
-  
+
   /* Quote colors */
   --quote-border: #d0d7de;
   --quote-bg: #f6f8fa;
-  
+
   /* Table colors */
   --table-border: #d0d7de;
   --table-bg-even: #f6f8fa;
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica,
+    Arial, sans-serif;
   font-size: 16px;
   line-height: 1.5;
   color: var(--text-color);
@@ -49,7 +51,12 @@ body {
 }
 
 /* Headings */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin-top: 24px;
   margin-bottom: 16px;
   font-weight: 600;
@@ -57,12 +64,29 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--text-color);
 }
 
-h1 { font-size: 2em; border-bottom: 1px solid var(--border-muted); padding-bottom: 0.3em; }
-h2 { font-size: 1.5em; border-bottom: 1px solid var(--border-muted); padding-bottom: 0.3em; }
-h3 { font-size: 1.25em; }
-h4 { font-size: 1em; }
-h5 { font-size: 0.875em; }
-h6 { font-size: 0.85em; color: var(--text-muted); }
+h1 {
+  font-size: 2em;
+  border-bottom: 1px solid var(--border-muted);
+  padding-bottom: 0.3em;
+}
+h2 {
+  font-size: 1.5em;
+  border-bottom: 1px solid var(--border-muted);
+  padding-bottom: 0.3em;
+}
+h3 {
+  font-size: 1.25em;
+}
+h4 {
+  font-size: 1em;
+}
+h5 {
+  font-size: 0.875em;
+}
+h6 {
+  font-size: 0.85em;
+  color: var(--text-muted);
+}
 
 /* Paragraphs */
 p {
@@ -89,7 +113,8 @@ code {
   margin: 0;
   font-size: 85%;
   border-radius: 6px;
-  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Monaco, Consolas, monospace;
+  font-family:
+    ui-monospace, SFMono-Regular, 'SF Mono', Monaco, Consolas, monospace;
 }
 
 pre {
@@ -120,7 +145,8 @@ blockquote {
 }
 
 /* Lists */
-ul, ol {
+ul,
+ol {
   margin-top: 0;
   margin-bottom: 16px;
   padding-left: 2em;
@@ -163,7 +189,7 @@ hr {
 }
 
 /* Task lists */
-input[type="checkbox"] {
+input[type='checkbox'] {
   margin-right: 0.5em;
 }
 
